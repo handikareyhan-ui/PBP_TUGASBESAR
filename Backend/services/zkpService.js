@@ -36,7 +36,7 @@ class ZkpService {
       dependents: Math.floor(jumlahTanggungan),
       salt: Math.floor(Math.random() * 1000000000),
       incomeThreshold: 2000000,
-      minDependents: 1
+      minDependents: 3
     };
 
     try {

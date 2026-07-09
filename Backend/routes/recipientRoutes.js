@@ -15,11 +15,6 @@ router.delete('/recipients/:id', authMiddleware, adminMiddleware, recipientContr
 // Citizen user portal claim step operations
 router.get('/user/claim-step', authMiddleware, recipientController.getClaimStep);
 router.post('/user/claim-step', authMiddleware, recipientController.setClaimStep);
-router.post('/user/connect-wallet', authMiddleware, recipientController.connectWallet);
-router.put('/user/connect-wallet', authMiddleware, recipientController.connectWallet);
 router.get('/users/profile', authMiddleware, recipientController.getUserProfile);
-
-// Public application endpoint
-router.post('/applications', recipientController.createRecipient);
 
 module.exports = router;

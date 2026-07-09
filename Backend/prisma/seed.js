@@ -76,7 +76,6 @@ async function main() {
       alamat: 'Kota Bandung',
       pendapatan: 1500000,
       jumlahTanggungan: 4,
-      walletId: '0xba8ff8c1d7a770f16e87747a167f99ec64e44d3f',
       jenisBantuan: 'Bansos Sembako',
       statusKelayakan: 'LAYAK',
     },
@@ -86,7 +85,6 @@ async function main() {
       alamat: 'Kota Jakarta',
       pendapatan: 2500000, // Pendapatan >= 2.000.000 (Tidak Layak)
       jumlahTanggungan: 4,
-      walletId: null,
       jenisBantuan: 'Bansos Sembako',
       statusKelayakan: 'TIDAK_LAYAK',
     },
@@ -96,7 +94,6 @@ async function main() {
       alamat: 'Kota Surabaya',
       pendapatan: 1200000,
       jumlahTanggungan: 2, // Tanggungan < 3 (Tidak Layak)
-      walletId: null,
       jenisBantuan: 'Bantuan Langsung Tunai',
       statusKelayakan: 'TIDAK_LAYAK',
     },
@@ -106,7 +103,6 @@ async function main() {
       alamat: 'Kota Medan',
       pendapatan: 3500000, // Pendapatan >= 2.000.000 (Tidak Layak)
       jumlahTanggungan: 1,
-      walletId: null,
       jenisBantuan: 'Program Keluarga Harapan',
       statusKelayakan: 'TIDAK_LAYAK',
     }
@@ -120,7 +116,6 @@ async function main() {
         alamat: app.alamat,
         pendapatan: app.pendapatan,
         jumlahTanggungan: app.jumlahTanggungan,
-        walletId: app.walletId,
         statusKelayakan: app.statusKelayakan,
         jenisBantuan: app.jenisBantuan,
         dokumen: 'dokumen_ktp_kk.pdf',

@@ -282,10 +282,10 @@ class BlockchainService {
       fabricStatus: p1o1 === 'ACTIVE' && ord1 === 'ACTIVE' ? 'HEALTHY' : 'DEGRADED',
       activeLeader: ord1 === 'ACTIVE' ? 'Orderer-01 (Raft)' : ord2 === 'ACTIVE' ? 'Orderer-02 (Raft)' : 'N/A',
       activeLeaderHash: ord1 === 'ACTIVE' ? '0x8a1c9e8f7d6a5c2b3e4f' : '0x0000000000000000',
-      tps: p1o1 === 'ACTIVE' ? 84 : 0,
-      tpsTrend: p1o1 === 'ACTIVE' ? 1.5 : 0,
+      tps: p1o1 === 'ACTIVE' ? Math.floor(70 + Math.random() * 25) : 0,
+      tpsTrend: p1o1 === 'ACTIVE' ? parseFloat((0.5 + Math.random() * 2).toFixed(1)) : 0,
       blockHeight,
-      avgLatency: p1o1 === 'ACTIVE' ? 18 : 0,
+      avgLatency: p1o1 === 'ACTIVE' ? Math.floor(12 + Math.random() * 14) : 0,
       latestTxId,
       nodes: [
         { name: 'Peer-01-Org1', ip: '127.0.0.1:7051', status: p1o1 },

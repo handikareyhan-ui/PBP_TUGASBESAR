@@ -14,7 +14,7 @@ import StatusKelayakan from '../pages/StatusKelayakan';
 import KlaimBantuan from '../pages/KlaimBantuan';
 import RiwayatBantuan from '../pages/RiwayatBantuan';
 import ProfilPengguna from '../pages/ProfilPengguna';
-import PengajuanBantuan from '../pages/PengajuanBantuan';
+
 
 import AdminLayout from '../layouts/AdminLayout';
 import PenggunaLayout from '../layouts/PenggunaLayout';
@@ -118,16 +118,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/user/apply"
-          element={
-            <ProtectedRoute allowedRole="user">
-              <PenggunaLayout>
-                <PengajuanBantuan />
-              </PenggunaLayout>
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/user/status"
           element={

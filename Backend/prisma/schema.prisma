@@ -23,7 +23,6 @@ model Application {
   pendapatan       Float
   jumlahTanggungan Int            @default(0)
   jenisBantuan     String         @default("Bansos Reguler")
-  walletId         String?
   dokumen          String?
   statusKelayakan  String         @default("PENDING") // e.g., "PENDING", "LAYAK", "TIDAK_LAYAK", "TERSALURKAN", "NONAKTIF", "DIBLOKIR"
   claimStep        Int            @default(1)

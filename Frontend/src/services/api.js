@@ -78,11 +78,6 @@ export const api = {
     return response.data;
   },
 
-  addApplication: async (application) => {
-    const response = await apiClient.post('/applications', application);
-    return response.data;
-  },
-
   deleteRecipient: async (id) => {
     const response = await apiClient.delete(`/recipients/${id}`);
     return response.data;
@@ -182,9 +177,4 @@ export const api = {
     const response = await apiClient.post('/user/claim-step', { step });
     return response.data.step;
   },
-
-  connectWallet: async (walletAddress) => {
-    const response = await apiClient.put('/user/connect-wallet', { walletAddress });
-    return response.data;
-  }
 };

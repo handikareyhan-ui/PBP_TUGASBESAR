@@ -33,7 +33,6 @@ exports.getAllVerifications = async (req, res, next) => {
         alamat: v.application.alamat,
         pendapatan: v.application.pendapatan,
         jumlahTanggungan: v.application.jumlahTanggungan,
-        walletId: v.application.walletId,
         statusKelayakan: v.application.statusKelayakan,
         claimStep: v.application.claimStep
       } : null
@@ -128,20 +127,15 @@ exports.getZkpQueue = async (req, res, next) => {
         maskedName = `${nameParts[0][0]}.`;
       }
 
-      // Masking walletId
-      let maskedWallet = item.application.walletId;
-      if (maskedWallet && maskedWallet.length > 10) {
-        maskedWallet = `${maskedWallet.substring(0, 5)}...${maskedWallet.substring(maskedWallet.length - 4)}`;
-      } else {
-        maskedWallet = 'Not Linked';
-      }
+      // Masking NIK
+      const maskedNik = item.application.nik ? `${item.application.nik.substring(0, 6)}...${item.application.nik.substring(12)}` : 'No NIK';
 
       return {
         id: item.id,
         initial,
         name: maskedName,
         fullName: item.application.nama,
-        wallet: maskedWallet,
+        nik: maskedNik,
         status: item.status
       };
     }).filter(Boolean);

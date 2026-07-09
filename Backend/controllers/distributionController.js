@@ -43,7 +43,6 @@ exports.getAllDistributions = async (req, res, next) => {
         alamat: d.application.alamat,
         pendapatan: d.application.pendapatan,
         jumlahTanggungan: d.application.jumlahTanggungan,
-        walletId: d.application.walletId,
         statusKelayakan: d.application.statusKelayakan,
         claimStep: d.application.claimStep
       } : null

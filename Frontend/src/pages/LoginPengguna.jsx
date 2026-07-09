@@ -6,7 +6,6 @@ import Toast from '../components/Toast';
 
 const LoginPengguna = () => {
   const navigate = useNavigate();
-  const [loginTab, setLoginTab] = useState('nik'); // 'nik' or 'wallet'
   const [identifier, setIdentifier] = useState('');
   const [verificationMethod, setVerificationMethod] = useState('otp'); // 'otp' or 'bio'
   const [loading, setLoading] = useState(false);
@@ -25,11 +24,11 @@ const LoginPengguna = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!identifier) {
-      triggerToast(loginTab === 'nik' ? 'Silakan masukkan 16 digit NIK Anda' : 'Silakan masukkan Wallet ID Anda', 'error');
+      triggerToast('Silakan masukkan 16 digit NIK Anda', 'error');
       return;
     }
 
-    if (loginTab === 'nik' && identifier.length < 10) {
+    if (identifier.length < 10) {
       triggerToast('Format NIK tidak valid', 'error');
       return;
     }
@@ -56,54 +55,22 @@ const LoginPengguna = () => {
       subtitle="Periksa dan klaim bantuan sosial Anda secara terenkripsi menggunakan zk-SNARKs."
     >
       <div className="space-y-6">
-        {/* Tab Selector */}
-        <div className="flex p-1 bg-surface-container rounded-xl border border-outline-variant/30">
-          <button
-            type="button"
-            onClick={() => {
-              setLoginTab('nik');
-              setIdentifier('');
-            }}
-            className={`flex-1 py-2 text-center rounded-lg font-bold text-xs transition-all duration-200 ${
-              loginTab === 'nik'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-on-surface-variant hover:text-primary'
-            }`}
-          >
-            NIK
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setLoginTab('wallet');
-              setIdentifier('');
-            }}
-            className={`flex-1 py-2 text-center rounded-lg font-bold text-xs transition-all duration-200 ${
-              loginTab === 'wallet'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-on-surface-variant hover:text-primary'
-            }`}
-          >
-            Wallet ID
-          </button>
-        </div>
-
         {/* Input Identifier Section */}
         <form onSubmit={handleLoginSubmit} className="space-y-5">
           <div className="space-y-1">
             <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-              {loginTab === 'nik' ? 'Nomor Induk Kependudukan (NIK)' : 'Blockchain Wallet ID / Address'}
+              Nomor Induk Kependudukan (NIK)
             </label>
             <div className="relative flex items-center">
               <span className="material-symbols-outlined absolute left-3 text-on-surface-variant/70 text-lg">
-                {loginTab === 'nik' ? 'id_card' : 'account_balance_wallet'}
+                id_card
               </span>
               <input
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-xl focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all text-sm font-mono"
-                placeholder={loginTab === 'nik' ? 'Masukkan 16 digit NIK Anda' : '0x... atau Alamat Wallet'}
+                placeholder="Masukkan 16 digit NIK Anda"
               />
             </div>
           </div>
@@ -160,7 +127,7 @@ const LoginPengguna = () => {
         </form>
 
         <p className="text-center text-xs text-on-surface-variant">
-          Belum terdaftar? <a href="#" className="text-secondary font-semibold hover:underline">Hubungi Pendamping Bansos</a>
+          Belum terdaftar? <a href="#" className="text-secondary font-semibold hover:underline">Hubungi Pendamping Bansos untuk didaftarkan oleh Admin</a>
         </p>
 
         {/* Security Badges Grid */}

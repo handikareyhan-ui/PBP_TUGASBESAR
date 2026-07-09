@@ -9,7 +9,6 @@ const PenggunaLayout = ({ children }) => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/user/dashboard', icon: 'dashboard' },
-    { name: 'Pengajuan Bantuan', path: '/user/apply', icon: 'note_add' },
     { name: 'Status Kelayakan', path: '/user/status', icon: 'verified_user' },
     { name: 'Klaim Bantuan', path: '/user/claim', icon: 'account_balance_wallet' },
     { name: 'Riwayat Bantuan', path: '/user/history', icon: 'history' },
@@ -142,9 +141,9 @@ const PenggunaLayout = ({ children }) => {
               <div className="hidden md:block text-left">
                 <p className="text-xs font-bold text-primary">{recipientData?.name || 'Penerima'}</p>
                 <p className="text-[9px] text-on-surface-variant font-mono">
-                  {recipientData?.walletId 
-                    ? `Wallet: ${recipientData.walletId.substring(0, 7)}...${recipientData.walletId.substring(recipientData.walletId.length - 4)}` 
-                    : 'Belum Terhubung'}
+                  {recipientData?.nik 
+                    ? `NIK: ${recipientData.nik.substring(0, 4)}...${recipientData.nik.substring(12)}` 
+                    : 'Penerima Bansos'}
                 </p>
               </div>
             </div>

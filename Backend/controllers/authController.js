@@ -78,27 +78,21 @@ exports.loginUser = async (req, res, next) => {
     const { identifier, method } = req.body;
 
     // NOTE: SMS OTP and Biometric validation methods are simulated for prototype/demo purposes.
-    // The backend directly authenticates the user using their NIK or Wallet Address identifier.
+    // The backend directly authenticates the user using their NIK identifier.
 
     if (!identifier) {
       return res.status(400).json({
         success: false,
-        message: 'NIK atau Wallet ID wajib disediakan.'
+        message: 'NIK wajib disediakan.'
       });
     }
 
     let application = null;
 
-    // Resolve query based on verification method
-    if (method === 'wallet' || identifier.startsWith('0x') || identifier.length < 16) {
-      application = await prisma.application.findFirst({
-        where: { walletId: identifier }
-      });
-    } else {
-      application = await prisma.application.findUnique({
-        where: { nik: identifier }
-      });
-    }
+    // Otorisasi murni menggunakan NIK warga
+    application = await prisma.application.findUnique({
+      where: { nik: identifier }
+    });
 
     if (!application) {
       return res.status(404).json({
@@ -138,7 +132,6 @@ exports.loginUser = async (req, res, next) => {
         status: application.statusKelayakan,
         pendapatan: application.pendapatan,
         jumlahTanggungan: application.jumlahTanggungan,
-        walletId: application.walletId,
         claimStep: application.claimStep,
         jenisBantuan: application.jenisBantuan,
         dokumen: application.dokumen

@@ -57,36 +57,7 @@ const DashboardPengguna = () => {
     loadDashboardData();
   }, []);
 
-  const connectMetaMask = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      triggerToast('MetaMask tidak terdeteksi. Silakan pasang ekstensi MetaMask.');
-      return;
-    }
 
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      });
-      
-      if (accounts && accounts.length > 0) {
-        const walletAddress = accounts[0];
-        
-        // Save walletAddress to database via PUT /api/user/connect-wallet
-        const res = await api.connectWallet(walletAddress);
-        if (res.success) {
-          triggerToast('✓ Wallet MetaMask berhasil ditautkan!');
-          
-          // Re-fetch profile to sync everything
-          const profile = await api.getUserProfile();
-          setRecipient(profile);
-          window.dispatchEvent(new Event('recipient_profile_refreshed'));
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      triggerToast(err.response?.data?.message || 'Batal menyambungkan wallet MetaMask.');
-    }
-  };
 
   if (loading) {
     return (
@@ -191,28 +162,6 @@ const DashboardPengguna = () => {
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border ${statusConfig.badge}`}>
               STATUS KELAYAKAN: {recipient?.status || 'PENDING'}
             </span>
-            {recipient?.walletId && /^0x[a-fA-F0-9]{40}$/.test(recipient.walletId) ? (
-              <div className="text-xs font-mono opacity-85 flex items-center gap-2">
-                <span>Wallet:</span>
-                <span className="bg-white/10 px-2.5 py-0.5 rounded tracking-wide text-[11px]">
-                  {recipient.walletId.substring(0, 6)}...{recipient.walletId.substring(recipient.walletId.length - 4)}
-                </span>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(recipient.walletId);
-                    triggerToast('✓ Wallet Address disalin ke clipboard!');
-                  }}
-                  className="bg-white/10 hover:bg-white/20 p-1 rounded transition-colors flex items-center justify-center"
-                  title="Salin Wallet Address"
-                >
-                  <span className="material-symbols-outlined text-xs">content_copy</span>
-                </button>
-              </div>
-            ) : (
-              <span className="px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-500/30 rounded-md font-mono text-[9px] font-bold uppercase tracking-wider">
-                ⚠️ Wallet Belum Terhubung
-              </span>
-            )}
           </div>
 
           <div className="max-w-2xl space-y-2 text-xs">
@@ -222,12 +171,6 @@ const DashboardPengguna = () => {
             <p className="text-white/80 leading-relaxed text-[11px]">
               {statusConfig.desc}
             </p>
-            {!(recipient?.walletId && /^0x[a-fA-F0-9]{40}$/.test(recipient.walletId)) && (
-              <div className="bg-amber-500/10 border border-amber-500/25 p-3 rounded-xl text-amber-200 text-[11px] leading-relaxed mt-2 flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm">info</span>
-                <span>MetaMask Wallet belum terhubung. Silakan hubungkan wallet Anda terlebih dahulu untuk mengakses program bantuan sosial.</span>
-              </div>
-            )}
           </div>
 
           <div className="pt-2 flex gap-3">
@@ -239,24 +182,6 @@ const DashboardPengguna = () => {
               <span>Pemeriksaan Status</span>
             </button>
             
-            {recipient?.walletId && /^0x[a-fA-F0-9]{40}$/.test(recipient.walletId) ? (
-              <button 
-                onClick={connectMetaMask}
-                className="px-4 py-2 bg-secondary text-white text-xs font-bold rounded-xl flex items-center gap-1.5 active:scale-95 transition-all hover:bg-primary shadow"
-              >
-                <span className="material-symbols-outlined text-sm">link</span>
-                <span>Ganti Wallet</span>
-              </button>
-            ) : (
-              <button 
-                onClick={connectMetaMask}
-                className="px-4 py-2 bg-[#e87024] hover:bg-[#d65f13] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 active:scale-95 transition-all shadow"
-              >
-                <span className="material-symbols-outlined text-sm">link</span>
-                <span>Hubungkan MetaMask</span>
-              </button>
-            )}
-
             <button 
               onClick={() => navigate('/user/profile')}
               className="px-4 py-2 bg-[#eff4ff] text-primary text-xs font-bold rounded-xl flex items-center gap-1.5 active:scale-95 transition-all hover:bg-slate-200"
@@ -345,7 +270,7 @@ const DashboardPengguna = () => {
             </div>
             
             <div className="flex items-center gap-1.5 self-end sm:self-auto font-bold text-xs uppercase tracking-wider">
-              <span>{claimStep === 3 ? 'Sudah Masuk Dompet' : 'Mulai Klaim'}</span>
+              <span>{claimStep === 3 ? 'Bantuan Tersalurkan' : 'Mulai Klaim'}</span>
               <span className="material-symbols-outlined text-sm">
                 {claimStep === 3 ? 'check_circle' : 'arrow_forward'}
               </span>

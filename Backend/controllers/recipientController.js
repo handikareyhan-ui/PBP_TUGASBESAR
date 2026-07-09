@@ -14,7 +14,6 @@ const mapRecipientToFrontend = (r) => ({
   status: r.statusKelayakan,
   pendapatan: r.pendapatan,
   jumlahTanggungan: r.jumlahTanggungan,
-  walletId: r.walletId,
   claimStep: r.claimStep,
   jenisBantuan: r.jenisBantuan,
   dokumen: r.dokumen
@@ -122,7 +121,7 @@ exports.getRecipientById = async (req, res, next) => {
  */
 exports.createRecipient = async (req, res, next) => {
   try {
-    const { name, nik, region, pendapatan, jumlahTanggungan, jenisBantuan, walletId, dokumen } = req.body;
+    const { name, nik, region, pendapatan, jumlahTanggungan, jenisBantuan, dokumen } = req.body;
 
     if (!name || !nik || !region) {
       return res.status(400).json({
@@ -145,7 +144,6 @@ exports.createRecipient = async (req, res, next) => {
 
     const incomeVal = pendapatan !== undefined ? parseFloat(pendapatan) : 1500000;
     const dependentsVal = jumlahTanggungan !== undefined ? parseInt(jumlahTanggungan) : 0;
-    const finalWallet = walletId || null;
     const finalJenisBantuan = jenisBantuan || 'Bansos Sembako';
     const finalDokumen = dokumen || 'dokumen_pendukung.pdf';
 
@@ -157,7 +155,6 @@ exports.createRecipient = async (req, res, next) => {
         alamat: region,
         pendapatan: incomeVal,
         jumlahTanggungan: dependentsVal,
-        walletId: finalWallet,
         jenisBantuan: finalJenisBantuan,
         dokumen: finalDokumen,
         statusKelayakan: 'PENDING'
@@ -235,7 +232,7 @@ exports.createRecipient = async (req, res, next) => {
 exports.updateRecipient = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, nik, region, status, pendapatan, jumlahTanggungan, walletId, jenisBantuan, dokumen } = req.body;
+    const { name, nik, region, status, pendapatan, jumlahTanggungan, jenisBantuan, dokumen } = req.body;
 
     const existing = await prisma.application.findUnique({
       where: { id }
@@ -271,7 +268,6 @@ exports.updateRecipient = async (req, res, next) => {
         statusKelayakan: status !== undefined ? status : existing.statusKelayakan,
         pendapatan: pendapatan !== undefined ? parseFloat(pendapatan) : existing.pendapatan,
         jumlahTanggungan: dependentsVal,
-        walletId: walletId !== undefined ? walletId : existing.walletId,
         jenisBantuan: jenisBantuan !== undefined ? jenisBantuan : existing.jenisBantuan,
         dokumen: dokumen !== undefined ? dokumen : existing.dokumen
       }
@@ -427,7 +423,7 @@ exports.setClaimStep = async (req, res, next) => {
 
         // Log CLAIM_COMPLETED
         await blockchainService.submitTransaction(
-          `[CLAIM_COMPLETED] NIK: ${application.nik} | DistID: ${result.distribution.id} | Wallet: ${application.walletId}`
+          `[CLAIM_COMPLETED] NIK: ${application.nik} | DistID: ${result.distribution.id}`
         );
         console.log(`[Claim Portal] Automated distribution logged for NIK: ${application.nik}`);
       } catch (err) {
@@ -458,80 +454,6 @@ exports.setClaimStep = async (req, res, next) => {
   }
 };
 
-/**
- * Connect MetaMask Wallet to citizen profile
- * POST /api/user/connect-wallet
- */
-exports.connectWallet = async (req, res, next) => {
-  try {
-    if (!req.user || req.user.role !== 'user') {
-      return res.status(403).json({
-        success: false,
-        message: 'Hanya penerima bantuan terautentikasi yang dapat menautkan wallet.'
-      });
-    }
-
-    const { walletAddress } = req.body;
-    if (!walletAddress) {
-      return res.status(400).json({
-        success: false,
-        message: 'Wallet address wajib disertakan.'
-      });
-    }
-
-    const isValidAddress = /^0x[a-fA-F0-9]{40}$/.test(walletAddress);
-    if (!isValidAddress) {
-      return res.status(400).json({
-        success: false,
-        message: 'Format wallet address Ethereum/MetaMask tidak valid.'
-      });
-    }
-
-    const duplicate = await prisma.application.findFirst({
-      where: {
-        walletId: walletAddress,
-        NOT: { id: req.user.id }
-      }
-    });
-
-    if (duplicate) {
-      return res.status(400).json({
-        success: false,
-        message: 'Wallet address ini sudah ditautkan ke pengajuan lain.'
-      });
-    }
-
-    const application = await prisma.application.findUnique({
-      where: { id: req.user.id }
-    });
-
-    if (!application) {
-      return res.status(404).json({
-        success: false,
-        message: 'Pengajuan tidak ditemukan.'
-      });
-    }
-
-    const oldWallet = application.walletId;
-
-    const updated = await prisma.application.update({
-      where: { id: req.user.id },
-      data: { walletId: walletAddress }
-    });
-
-    await blockchainService.submitTransaction(
-      `STATUS_CHANGE: Penerima ${application.nama} menautkan wallet address ${walletAddress} (Old: ${oldWallet})`
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: 'MetaMask wallet berhasil ditautkan.',
-      walletId: updated.walletId
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 /**
  * Get current user profile based on decoded JWT identity

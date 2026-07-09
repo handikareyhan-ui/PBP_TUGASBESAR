@@ -45,7 +45,7 @@ const RiwayatBantuan = () => {
       <div>
         <h2 className="text-2xl font-bold text-primary">Riwayat Penerimaan Bantuan</h2>
         <p className="text-xs text-on-surface-variant">
-          Daftar riwayat bantuan sosial yang disalurkan ke dompet digital Anda secara transparan.
+          Daftar riwayat bantuan sosial yang disalurkan kepada Anda secara transparan.
         </p>
       </div>
 
@@ -62,11 +62,7 @@ const RiwayatBantuan = () => {
           <div className="space-y-1">
             <p className="text-[10px] font-bold text-secondary-container uppercase tracking-widest">Total Bantuan Tahun 2026</p>
             <h3 className="text-3xl font-extrabold text-white">Rp {totalReceived.toLocaleString('id-ID')}</h3>
-            {recipient?.walletId && /^0x[a-fA-F0-9]{40}$/.test(recipient.walletId) && (
-              <p className="text-[10px] text-white/80 font-mono mt-1">
-                Tujuan Transfer: {recipient.walletId.substring(0, 6)}...{recipient.walletId.substring(recipient.walletId.length - 4)}
-              </p>
-            )}
+
           </div>
 
           <div className="flex gap-4 w-full md:w-auto">

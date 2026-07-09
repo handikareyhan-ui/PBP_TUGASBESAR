@@ -38,37 +38,6 @@ const KlaimBantuan = () => {
     });
   }, []);
 
-  const connectMetaMask = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      triggerToast('MetaMask tidak terdeteksi. Silakan pasang ekstensi MetaMask.');
-      return;
-    }
-
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      });
-      
-      if (accounts && accounts.length > 0) {
-        const walletAddress = accounts[0];
-        
-        // Save walletAddress via PUT /api/user/connect-wallet
-        const res = await api.connectWallet(walletAddress);
-        if (res.success) {
-          triggerToast('✓ Wallet MetaMask berhasil ditautkan!');
-          
-          // Re-fetch recipient
-          const profile = await api.getUserProfile();
-          setRecipient(profile);
-          window.dispatchEvent(new Event('recipient_profile_refreshed'));
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      triggerToast(err.response?.data?.message || 'Batal menyambungkan wallet MetaMask.');
-    }
-  };
-
   const handleNextStep = async () => {
     setLoading(true);
     try {
@@ -176,26 +145,6 @@ const KlaimBantuan = () => {
       {/* STEP CONTENTS WRAPPER */}
       <section className="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm min-h-64 flex flex-col justify-between">
         
-        {!(recipient?.walletId && /^0x[a-fA-F0-9]{40}$/.test(recipient.walletId)) ? (
-          <div className="space-y-4 animate-fade-in py-6">
-            <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl text-amber-900 text-xs leading-relaxed space-y-3">
-              <div className="flex items-center gap-2 font-bold text-amber-950">
-                <span className="material-symbols-outlined text-base">warning</span>
-                <span>MetaMask Wallet Belum Terhubung</span>
-              </div>
-              <p>
-                Anda wajib menautkan wallet MetaMask Anda ke akun penerima bansos sebelum dapat memproses verifikasi ZKP atau menandatangani dokumen klaim pencairan bantuan.
-              </p>
-              <button
-                onClick={connectMetaMask}
-                className="px-4 py-2 bg-[#e87024] hover:bg-[#d65f13] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-md"
-              >
-                <span className="material-symbols-outlined text-sm">link</span>
-                <span>Hubungkan MetaMask</span>
-              </button>
-            </div>
-          </div>
-        ) : (
           <>
             {/* STEP 1: IDENTITY VERIFICATION VIEW */}
             {currentStep === 1 && (
@@ -214,7 +163,7 @@ const KlaimBantuan = () => {
                     <div>
                       <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1">PROVED DATA HASH (INPUT ENKRIPSI)</span>
                       <code className="font-mono text-primary font-bold break-all bg-white p-1 rounded border block">
-                        {recipient?.walletId || 'Belum Terhubung'}
+                        {recipient?.nik ? `${recipient.nik.substring(0, 6)}**********` : 'Belum Terverifikasi'}
                       </code>
                     </div>
                     <div>
@@ -241,7 +190,7 @@ const KlaimBantuan = () => {
               <div className="space-y-4 animate-fade-in">
                 <div className="space-y-1">
                   <h3 className="text-md font-bold text-primary">Tahap 2: Pembubuhan Tanda Tangan Kunci Digital</h3>
-                  <p className="text-xs text-on-surface-variant">Lakukan otorisasi penyaluran dana bansos ke alamat dompet terdaftar.</p>
+                  <p className="text-xs text-on-surface-variant">Konfirmasi penyaluran dana bansos ke akun penerima terdaftar.</p>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -281,7 +230,7 @@ const KlaimBantuan = () => {
                         <span className="material-symbols-outlined text-4xl text-green-600 mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>draw</span>
                         <p className="text-[9px] font-bold uppercase tracking-wider">Tanda Tangan Tersemat ✓</p>
                         <p className="text-[8px] opacity-75 mt-1 font-mono">
-                          {recipient?.walletId ? `${recipient.walletId.substring(0, 6)}...${recipient.walletId.substring(recipient.walletId.length - 4)}` : 'Belum Terhubung'}
+                          {recipient?.nik ? `NIK: ${recipient.nik.substring(0, 6)}...${recipient.nik.substring(12)}` : 'Belum Terhubung'}
                         </p>
                       </>
 
@@ -289,7 +238,7 @@ const KlaimBantuan = () => {
                       <>
                         <span className="material-symbols-outlined text-4xl text-outline mb-2">draw</span>
                         <p className="text-[9px] font-bold uppercase tracking-widest">KETUK UNTUK MENANDATANGANI</p>
-                        <p className="text-[8px] opacity-60 mt-1">Verifikasi Kunci Privat Dompet</p>
+                        <p className="text-[8px] opacity-60 mt-1">Konfirmasi Identitas Penerima</p>
                       </>
                     )}
                   </div>
@@ -309,7 +258,7 @@ const KlaimBantuan = () => {
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-primary">Klaim Dana Bantuan Berhasil!</h3>
                   <p className="text-xs text-on-surface-variant max-w-sm mx-auto leading-relaxed">
-                    Klaim Anda sukses ditandatangani dan diverifikasi oleh konsensus Raft ledger jaringan. Dana bantuan disalurkan langsung ke dompet Anda.
+                    Klaim Anda sukses ditandatangani dan diverifikasi oleh konsensus Raft ledger jaringan. Dana bantuan telah berhasil disalurkan ke akun Anda.
                   </p>
                 </div>
 
@@ -360,7 +309,6 @@ const KlaimBantuan = () => {
               </button>
             </div>
           </>
-        )}
 
       </section>
 
