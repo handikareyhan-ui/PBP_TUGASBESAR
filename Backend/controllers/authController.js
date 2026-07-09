@@ -77,6 +77,9 @@ exports.loginUser = async (req, res, next) => {
   try {
     const { identifier, method } = req.body;
 
+    // NOTE: SMS OTP and Biometric validation methods are simulated for prototype/demo purposes.
+    // The backend directly authenticates the user using their NIK or Wallet Address identifier.
+
     if (!identifier) {
       return res.status(400).json({
         success: false,

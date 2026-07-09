@@ -17,3 +17,9 @@ The off-chain database is powered by **MongoDB** using Prisma ORM. (A legacy SQL
 Since Prisma ORM utilizes transactions for database updates in MongoDB, MongoDB **must** be run as a replica set.
 
 Refer to the [INSTALLATION.md](file:///d:/03_File%20Reyhan/TUGAS%20BESAR%20KELOMPOK%208%20BANSOS%20CHAIN/INSTALLATION.md) file for setup and execution instructions.
+
+## Ports and Fallback (Dynamic Mock Mode)
+
+- **Backend Server**: Runs on port `3000` (API endpoint: `http://localhost:3000/api`).
+- **Frontend App**: Runs on port `5173` (accessible via browser at `http://localhost:5173/`).
+- **Blockchain Fallback**: The backend features a dynamic gateway checker. If the local Hyperledger Fabric nodes are offline or unreachable, it falls back gracefully to a mock offline mode, storing audit trails, disbursements, and verification hashes inside the off-chain MongoDB database. This allows for seamless prototyping and verification of front-to-back workflows.

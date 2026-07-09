@@ -27,7 +27,7 @@ exports.getAllAudits = async (req, res, next) => {
         audits.sort((a, b) => b.timestamp - a.timestamp);
         fromLedger = true;
       } catch (err) {
-        console.error('[Audit Controller] Failed to read audits from Fabric ledger, falling back to SQLite:', err.message);
+        console.error('[Audit Controller] Failed to read audits from Fabric ledger, falling back to MongoDB:', err.message);
       }
     }
 
@@ -74,7 +74,7 @@ exports.getTransactions = async (req, res, next) => {
         auditLogs.sort((a, b) => b.timestamp - a.timestamp);
         fromLedger = true;
       } catch (err) {
-        console.error('[Audit Controller] Failed to read transactions from Fabric ledger, falling back to SQLite:', err.message);
+        console.error('[Audit Controller] Failed to read transactions from Fabric ledger, falling back to MongoDB:', err.message);
       }
     }
 

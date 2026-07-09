@@ -23,10 +23,50 @@ async function main() {
   // Clean existing tables to ensure clean slate
   await prisma.verification.deleteMany({});
   await prisma.distribution.deleteMany({});
+  await prisma.fundTransaction.deleteMany({});
+  await prisma.fundSource.deleteMany({});
   await prisma.application.deleteMany({});
   await prisma.auditLog.deleteMany({});
 
   console.log('Cleared existing records.');
+
+  // Seed default FundSources (assistance programs)
+  await prisma.fundSource.createMany({
+    data: [
+      {
+        programName: 'Bansos Sembako',
+        fundSource: 'APBN',
+        institution: 'Kementerian Sosial',
+        fiscalYear: 2026,
+        allocatedBudget: 150000000.0,
+        remainingBudget: 150000000.0,
+        distributedBudget: 0.0,
+        status: 'ACTIVE'
+      },
+      {
+        programName: 'Bantuan Langsung Tunai',
+        fundSource: 'APBD Provinsi',
+        institution: 'Dinas Sosial Provinsi',
+        fiscalYear: 2026,
+        allocatedBudget: 200000000.0,
+        remainingBudget: 200000000.0,
+        distributedBudget: 0.0,
+        status: 'ACTIVE'
+      },
+      {
+        programName: 'Program Keluarga Harapan',
+        fundSource: 'APBN',
+        institution: 'Kementerian Sosial',
+        fiscalYear: 2026,
+        allocatedBudget: 300000000.0,
+        remainingBudget: 300000000.0,
+        distributedBudget: 0.0,
+        status: 'ACTIVE'
+      }
+    ]
+  });
+
+  console.log('Seeded default fund sources successfully.');
 
   // 2. Seed Test Applications (Simulating citizens who submitted applications)
   const testApplications = [
