@@ -288,10 +288,10 @@ class BlockchainService {
       avgLatency: p1o1 === 'ACTIVE' ? Math.floor(12 + Math.random() * 14) : 0,
       latestTxId,
       nodes: [
-        { name: 'Peer-01-Org1', ip: '127.0.0.1:7051', status: p1o1 },
-        { name: 'Peer-02-Org1', ip: '127.0.0.1:8051', status: p2o1 },
-        { name: 'Peer-01-Org2', ip: '127.0.0.1:9051', status: p1o2 },
-        { name: 'Peer-02-Org2', ip: '127.0.0.1:10051', status: p2o2 },
+        { name: 'Peer-Kemensos (Pusat)', ip: '127.0.0.1:7051', status: p1o1 },
+        { name: 'Peer-Dinsos (Daerah)', ip: '127.0.0.1:8051', status: p2o1 },
+        { name: 'Peer-Bank Penyalur', ip: '127.0.0.1:9051', status: p1o2 },
+        { name: 'Peer-Auditor Independen', ip: '127.0.0.1:10051', status: p2o2 },
         { name: 'Orderer-01', ip: '127.0.0.1:7050', status: ord1 },
         { name: 'Orderer-02', ip: '127.0.0.1:8050', status: ord2 },
         { name: 'Orderer-03', ip: '127.0.0.1:9050', status: ord3 }
