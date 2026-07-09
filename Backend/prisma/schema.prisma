@@ -1,0 +1,97 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  username         String            @unique
+  password         String
+  role             String            @default("USER") // e.g., "ADMIN", "USER"
+  fundTransactions FundTransaction[]
+}
+
+model Application {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  nik              String         @unique
+  nama             String
+  alamat           String
+  pendapatan       Float
+  jumlahTanggungan Int            @default(0)
+  jenisBantuan     String         @default("Bansos Reguler")
+  walletId         String?
+  dokumen          String?
+  statusKelayakan  String         @default("PENDING") // e.g., "PENDING", "LAYAK", "TIDAK_LAYAK", "TERSALURKAN", "NONAKTIF", "DIBLOKIR"
+  claimStep        Int            @default(1)
+  verifications    Verification[]
+  distributions    Distribution[]
+
+  @@map("applications")
+}
+
+model Verification {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String      @db.ObjectId
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  proofHash     String
+  proofVerified Boolean     @default(false)
+  verifiedAt    DateTime?
+  status        String      @default("PENDING") // e.g., "PENDING", "VERIFIED", "REJECTED"
+  createdAt     DateTime    @default(now())
+}
+
+model FundSource {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  programName       String            @unique
+  fundSource        String            // e.g., "APBN", "APBD Provinsi", etc.
+  institution       String
+  fiscalYear        Int               @default(2026)
+  allocatedBudget   Float
+  distributedBudget Float             @default(0)
+  remainingBudget   Float
+  status            String            @default("ACTIVE") // "ACTIVE" or "INACTIVE"
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  distributions     Distribution[]
+  transactions      FundTransaction[]
+
+  @@map("fund_sources")
+}
+
+model FundTransaction {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  fundSourceId  String      @db.ObjectId
+  fundSource    FundSource  @relation(fields: [fundSourceId], references: [id], onDelete: Cascade)
+  nominal       Float
+  type          String      // "Penambahan Anggaran", "Pengurangan Anggaran", "Koreksi Anggaran", "Pembatalan"
+  adminId       String      @db.ObjectId
+  admin         User        @relation(fields: [adminId], references: [id])
+  txHash        String?     // Blockchain Transaction ID
+  createdAt     DateTime    @default(now())
+
+  @@map("fund_transactions")
+}
+
+model Distribution {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String      @db.ObjectId
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  fundSourceId  String?     @db.ObjectId
+  fundSource    FundSource? @relation(fields: [fundSourceId], references: [id])
+  nominal       Float
+  status        String      @default("PENDING") // e.g., "PENDING", "DISTRIBUTED", "FAILED"
+  txHash        String?
+  createdAt     DateTime    @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  txHash    String   @unique
+  aktivitas String
+  timestamp DateTime @default(now())
+}
+

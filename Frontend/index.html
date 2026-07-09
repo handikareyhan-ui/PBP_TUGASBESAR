@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      if (window.location.search.includes('mock-metamask=true') || window.location.hash.includes('mock-metamask=true') || sessionStorage.getItem('mock-metamask') === 'true') {
+        sessionStorage.setItem('mock-metamask', 'true');
+        window.ethereum = {
+          isMetaMask: true,
+          request: async (requestObj) => {
+            if (requestObj.method === 'eth_requestAccounts' || requestObj.method === 'eth_accounts') {
+              return ['0xba8ff8c1d7a770f16e87747a167f99ec64e44d3f'];
+            }
+            throw new Error('Unsupported method');
+          }
+        };
+      }
+    </script>
+    <title>BansosChain - Akuntabilitas Bantuan Sosial Berbasis Blockchain</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Courier+Prime&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-background text-on-background font-body min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
